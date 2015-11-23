@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/cv"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        >
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/contact_iv"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/profile"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/contact_name_tv"
+            android:textSize="15sp"
+            android:text="Contact Name"
+            android:layout_alignTop="@+id/contact_iv"
+            android:layout_toRightOf="@+id/contact_iv"
+            android:layout_toEndOf="@+id/contact_iv"
+            android:layout_marginLeft="24dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/contact_number_tv"
+            android:text="5103672406"
+            android:layout_below="@+id/contact_name_tv"
+            android:layout_alignLeft="@+id/contact_name_tv"
+            android:layout_alignStart="@+id/contact_name_tv" />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>
