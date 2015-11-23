@@ -1,5 +1,6 @@
 package txtr.apps.armorg.com.txtr;
 
+import android.graphics.Color;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private List<Card> cards;
+    private RelativeLayout layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView rv = (RecyclerView)findViewById(R.id.rv);
         rv.setHasFixedSize(true);
+
+        layout = (RelativeLayout) findViewById(R.id.root);
 
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
@@ -41,7 +46,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void sendMessage(String msg, String contactNum) {
-//        Snackbar.make(, "", Snackbar.LENGTH_INDEFINITE)
+        final Snackbar snackBar = Snackbar.make(layout, "Message sent", Snackbar.LENGTH_LONG);
+        snackBar.setAction("DISMISS", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackBar.dismiss();
+            }
+        });
+        snackBar.setActionTextColor(Color.RED);
+        snackBar.show();
     }
 
     class Card {
