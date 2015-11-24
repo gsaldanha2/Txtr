@@ -55,13 +55,14 @@ public class CardCreatorActivity extends AppCompatActivity {
             @Override
             public void onItemClick(View view, int position) {
                 phrase = phrases.get(position);
+                view.setSelected(true);
             }
         }));
         contactsRv.addOnItemTouchListener(new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 contactNum = contacts.get(position).contactNum;
-                System.out.println(contacts.get(position).contactNum);
+                view.setSelected(true);
             }
         }));
 
@@ -69,17 +70,27 @@ public class CardCreatorActivity extends AppCompatActivity {
         addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<String> cardMsgs = SharedPrefsHandler.loadStringArray("card_msg_list", CardCreatorActivity.this);
-                ArrayList<String> cardNums = SharedPrefsHandler.loadStringArray("card_num_list", CardCreatorActivity.this);
-                cardMsgs.add(phrase);
-                cardNums.add(contactNum);
-                SharedPrefsHandler.saveStringArray(cardMsgs, "card_msg_list", CardCreatorActivity.this);
-                SharedPrefsHandler.saveStringArray(cardNums, "card_num_list", CardCreatorActivity.this);
-                Intent intent = new Intent(CardCreatorActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+                if(phrase != null && contactNum != null) {
+                    ArrayList<String> cardMsgs = SharedPrefsHandler.loadStringArray("card_msg_list", CardCreatorActivity.this);
+                    ArrayList<String> cardNums = SharedPrefsHandler.loadStringArray("card_num_list", CardCreatorActivity.this);
+                    cardMsgs.add(phrase);
+                    cardNums.add(contactNum);
+                    SharedPrefsHandler.saveStringArray(cardMsgs, "card_msg_list", CardCreatorActivity.this);
+                    SharedPrefsHandler.saveStringArray(cardNums, "card_num_list", CardCreatorActivity.this);
+                    Intent intent = new Intent(CardCreatorActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(CardCreatorActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 
     public void initializeCards() {

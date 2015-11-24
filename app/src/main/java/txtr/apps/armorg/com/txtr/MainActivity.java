@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Card> cards;
     private List<Contact> contacts;
     private List<String> phrases;
+    private ArrayList<String> cardArray, cardNumArray;
     private RelativeLayout layout;
     private Card undoCard;
 
@@ -96,6 +97,10 @@ public class MainActivity extends AppCompatActivity {
                                 for (final int position : reverseSortedPositions) {
                                     undoCard = cards.get(position);
                                     cards.remove(position);
+                                    cardArray.remove(position);
+                                    cardNumArray.remove(position);
+                                    SharedPrefsHandler.saveStringArray(cardArray, "card_msg_list", MainActivity.this);
+                                    SharedPrefsHandler.saveStringArray(cardNumArray, "card_num_list", MainActivity.this);
                                     adapter.notifyItemRemoved(position);
 
                                     final Snackbar snackBar = Snackbar.make(layout, "Card removed", Snackbar.LENGTH_LONG);
@@ -103,6 +108,10 @@ public class MainActivity extends AppCompatActivity {
                                         @Override
                                         public void onClick(View v) {
                                             cards.add(undoCard);
+                                            cardArray.add(undoCard.message);
+                                            cardNumArray.add(undoCard.contactNum);
+                                            SharedPrefsHandler.saveStringArray(cardArray, "card_msg_list", MainActivity.this);
+                                            SharedPrefsHandler.saveStringArray(cardNumArray, "card_num_list", MainActivity.this);
                                             adapter.notifyItemInserted(cards.indexOf(undoCard));
                                             snackBar.dismiss();
                                             Snackbar.make(layout, "Action undone", Snackbar.LENGTH_SHORT).show();
@@ -168,8 +177,8 @@ public class MainActivity extends AppCompatActivity {
         SharedPrefsHandler.saveStringArray(phrases, "phrase_list", this);
 
         cards = new ArrayList<>();
-        ArrayList<String> cardArray = SharedPrefsHandler.loadStringArray("card_msg_list", this);
-        ArrayList<String> cardNumArray = SharedPrefsHandler.loadStringArray("card_num_list", this);
+        cardArray = SharedPrefsHandler.loadStringArray("card_msg_list", this);
+        cardNumArray = SharedPrefsHandler.loadStringArray("card_num_list", this);
         for(int i = 0; i < cardArray.size(); i ++) {
             cards.add(new Card(cardArray.get(i), cardNumArray.get(i)));
         }

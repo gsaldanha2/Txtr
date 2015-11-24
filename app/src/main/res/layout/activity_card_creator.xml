@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:andorid="http://schemas.android.com/apk/res-auto"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
@@ -14,14 +15,16 @@
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="232dp"
-        android:id="@+id/contacts_rv" />
+        android:id="@+id/contacts_rv"
+        android:background="@drawable/selector"/>
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="226dp"
         android:id="@+id/phrases_rv"
         android:layout_marginTop="32dp"
-        android:layout_weight="0.47" />
+        android:layout_weight="0.47"
+        andorid:background="@drawable/selector"/>
 
     <Button
         android:layout_width="match_parent"
