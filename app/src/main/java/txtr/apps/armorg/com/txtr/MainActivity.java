@@ -1,19 +1,29 @@
 package txtr.apps.armorg.com.txtr;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +31,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
-import android.support.v7.widget.Toolbar;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +41,11 @@ public class MainActivity extends AppCompatActivity {
     private List<Card> cards;
     private List<Contact> contacts;
     private RelativeLayout layout;
+    private Card undoCard;
+
+    private BroadcastReceiver sendBroadcastReceiver;
+
+    private String SENT = "SMS_SENT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,13 +69,67 @@ public class MainActivity extends AppCompatActivity {
         contactsRv.setLayoutManager(llm2);
 
         initializeCards();
+        registerMessagingReceivers();
 
-        RVCardsAdapter adapter = new RVCardsAdapter(cards);
+        final RVCardsAdapter adapter = new RVCardsAdapter(cards);
         cardsRv.setAdapter(adapter);
 
         RVContactsAdapter contactsAdapter = new RVContactsAdapter(contacts);
         contactsRv.setAdapter(contactsAdapter);
 
+        SwipeableRecyclerViewTouchListener swipeTouchListener =
+                new SwipeableRecyclerViewTouchListener(cardsRv,
+                        new SwipeableRecyclerViewTouchListener.SwipeListener() {
+                            @Override
+                            public boolean canSwipe(int position) {
+                                return true;
+                            }
+
+                            @Override
+                            public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                                for (final int position : reverseSortedPositions) {
+                                    undoCard = cards.get(position);
+                                    cards.remove(position);
+                                    adapter.notifyItemRemoved(position);
+
+                                    final Snackbar snackBar = Snackbar.make(layout, "Card removed", Snackbar.LENGTH_LONG);
+                                    snackBar.setAction("UNDO", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            cards.add(undoCard);
+                                            adapter.notifyItemInserted(cards.indexOf(undoCard));
+                                            snackBar.dismiss();
+                                            Snackbar.make(layout, "Action undone", Snackbar.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                    snackBar.setActionTextColor(Color.RED);
+                                    snackBar.show();
+                                }
+                                adapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                                for (int position : reverseSortedPositions) {
+                                    sendMessage(cards.get(position).message, cards.get(position).contactNum);
+                                }
+                            }
+                        });
+
+        cardsRv.addOnItemTouchListener(swipeTouchListener);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                alert.setTitle("Create Card");
+                alert.setMessage("Select Contact and Phrase");
+                alert.show();
+            }
+        });
+
+        //<editor-fold desc="Tab Setup">
         TabHost tabHost = (TabHost) findViewById(R.id.tabHost);
         tabHost.setup();
 
@@ -81,12 +147,17 @@ public class MainActivity extends AppCompatActivity {
         tabSpec.setContent(R.id.phrases_tab);
         tabSpec.setIndicator("Phrases");
         tabHost.addTab(tabSpec);
+
+        for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++) {
+            TextView tv = (TextView) tabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
+            tv.setTextColor(Color.parseColor("#ffffff"));
+        }
+        //</editor-fold>
     }
 
     public void initializeCards() {
         cards = new ArrayList<>();
-        cards.add(new Card("When are you picking me up?", "510-367-2406"));
-        cards.add(new Card("I'm done!", "602-563-9240"));
+        cards.add(new Card("Testing app...", "510-367-2406"));
 
         contacts = new ArrayList<>();
 
@@ -102,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                     Cursor pCur = cr.query(
                             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                             null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
                             new String[]{id}, null);
                     while (pCur.moveToNext()) {
                         String phoneNo = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
@@ -113,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+        cur.close();
     }
 
     public Bitmap openPhoto(String contactId) {
@@ -136,19 +208,47 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
-    public void sendMessage(String msg, String contactNum) {
 
-        //send message here
-
-        final Snackbar snackBar = Snackbar.make(layout, "Message sent", Snackbar.LENGTH_LONG);
-        snackBar.setAction("DISMISS", new View.OnClickListener() {
+    private void registerMessagingReceivers() {
+        //---when the SMS has been sent---
+        sendBroadcastReceiver = new BroadcastReceiver() {
             @Override
-            public void onClick(View v) {
-                snackBar.dismiss();
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode()) {
+                    case Activity.RESULT_OK:
+                        Snackbar.make(layout, "Message Sent", Snackbar.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                        Snackbar.make(layout, "Failed to send", Snackbar.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+                        Snackbar.make(layout, "No service - can't send", Snackbar.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+                        Snackbar.make(layout, "Null error - can't send", Snackbar.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+                        Snackbar.make(layout, "Radio is off - can't send", Snackbar.LENGTH_SHORT).show();
+                        break;
+                }
             }
-        });
-        snackBar.setActionTextColor(Color.RED);
-        snackBar.show();
+        };
+
+        registerReceiver(sendBroadcastReceiver, new IntentFilter(SENT));
+    }
+
+    public void sendMessage(String msg, String contactNum) {
+        PendingIntent sentPI = PendingIntent.getBroadcast(this, 0,
+                new Intent(SENT), 0);
+
+        SmsManager sms = SmsManager.getDefault();
+        sms.sendTextMessage(contactNum, null, msg, sentPI, null);
+    }
+
+    @Override
+    protected void onStop() {
+        unregisterReceiver(sendBroadcastReceiver);
+        super.onStop();
     }
 
     class Card {
@@ -173,25 +273,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public class RVCardsAdapter extends RecyclerView.Adapter<RVCardsAdapter.CardViewHolder> {
-        public class CardViewHolder extends RecyclerView.ViewHolder {
-            CardView cv;
-            TextView messageTv, contactTv;
-
-            public CardViewHolder(View itemView) {
-                super(itemView);
-                cv = (CardView) itemView.findViewById(R.id.cv);
-                messageTv = (TextView) itemView.findViewById(R.id.message_tv);
-                contactTv = (TextView) itemView.findViewById(R.id.contact_tv);
-                cv.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        sendMessage(messageTv.getText().toString(), contactTv.getText().toString());
-                    }
-                });
-            }
-        }
-
         List<Card> cards;
+
         public RVCardsAdapter(List<Card> cards) {
             this.cards = cards;
         }
@@ -213,29 +296,23 @@ public class MainActivity extends AppCompatActivity {
         public void onAttachedToRecyclerView(RecyclerView recyclerView) {
             super.onAttachedToRecyclerView(recyclerView);
         }
-    }
 
-    public class RVContactsAdapter extends RecyclerView.Adapter<RVContactsAdapter.CardViewHolder> {
         public class CardViewHolder extends RecyclerView.ViewHolder {
             CardView cv;
-            TextView contactNameTv, contactNumTv;
-            ImageView contactIv;
+            TextView messageTv, contactTv;
 
             public CardViewHolder(View itemView) {
                 super(itemView);
                 cv = (CardView) itemView.findViewById(R.id.cv);
-                contactNameTv = (TextView) itemView.findViewById(R.id.contact_name_tv);
-                contactNumTv = (TextView) itemView.findViewById(R.id.contact_number_tv);
-                contactIv = (ImageView) itemView.findViewById(R.id.contact_iv);
-                cv.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                    }
-                });
+                messageTv = (TextView) itemView.findViewById(R.id.message_tv);
+                contactTv = (TextView) itemView.findViewById(R.id.contact_tv);
             }
         }
+    }
 
+    public class RVContactsAdapter extends RecyclerView.Adapter<RVContactsAdapter.CardViewHolder> {
         List<Contact> contacts;
+
         public RVContactsAdapter(List<Contact> contacts) {
             this.contacts = contacts;
         }
@@ -252,11 +329,29 @@ public class MainActivity extends AppCompatActivity {
         public void onBindViewHolder(CardViewHolder cvh, int i) {
             cvh.contactNameTv.setText(contacts.get(i).contactName);
             cvh.contactNumTv.setText(contacts.get(i).contactNum);
-            cvh.contactIv.setImageBitmap(contacts.get(i).image);
+            Bitmap bitmap = contacts.get(i).image;
+            if (bitmap != null)
+                cvh.contactIv.setImageBitmap(contacts.get(i).image);
+            else
+                cvh.contactIv.setImageResource(R.drawable.profile);
         }
 
         public void onAttachedToRecyclerView(RecyclerView recyclerView) {
             super.onAttachedToRecyclerView(recyclerView);
+        }
+
+        public class CardViewHolder extends RecyclerView.ViewHolder {
+            CardView cv;
+            TextView contactNameTv, contactNumTv;
+            ImageView contactIv;
+
+            public CardViewHolder(View itemView) {
+                super(itemView);
+                cv = (CardView) itemView.findViewById(R.id.cv);
+                contactNameTv = (TextView) itemView.findViewById(R.id.contact_name_tv);
+                contactNumTv = (TextView) itemView.findViewById(R.id.contact_number_tv);
+                contactIv = (ImageView) itemView.findViewById(R.id.contact_iv);
+            }
         }
     }
 }

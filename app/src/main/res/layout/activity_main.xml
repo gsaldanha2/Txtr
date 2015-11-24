@@ -62,6 +62,15 @@
                         android:layout_height="match_parent"
                         android:id="@+id/cards_rv"
                         />
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fab"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@android:drawable/ic_menu_add"
+                        app:elevation="4dp"
+                     />
+
                 </LinearLayout>
 
                 <LinearLayout
