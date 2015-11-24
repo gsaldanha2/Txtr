@@ -45,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
 
     private BroadcastReceiver sendBroadcastReceiver;
 
-    private String SENT = "SMS_SENT";
+    private String SENT = "SMS_SENT", currentAddedName = "", currentAddedNumber = "", currentAddedPhrase = "";
+    private Bitmap curredAddedBitmap = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +126,22 @@ public class MainActivity extends AppCompatActivity {
                 AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                 alert.setTitle("Create Card");
                 alert.setMessage("Select Contact and Phrase");
+                LayoutInflater inflater = MainActivity.this.getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.alert_layout, null);
+                alert.setView(dialogView);
+
+                View contactView = dialogView.findViewById(R.id.contact_view);
+                TextView selectedContactName = (TextView) contactView.findViewById(R.id.contact_name_tv);
+                selectedContactName.setText("Click here to select a contact");
+                TextView selectedContactNumber = (TextView) contactView.findViewById(R.id.contact_number_tv);
+                selectedContactNumber.setText(currentAddedNumber);
+                ImageView selectedContactImage = (ImageView) contactView.findViewById(R.id.contact_iv);
+                selectedContactImage.setImageResource(R.drawable.profile);
+
+                View phraseView = dialogView.findViewById(R.id.phrase_view);
+                TextView selectedPhrase = (TextView) phraseView.findViewById(R.id.phrase_tv);
+                selectedPhrase.setText("Click here to select a phrase");
+                alert.create();
                 alert.show();
             }
         });
@@ -304,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
             public CardViewHolder(View itemView) {
                 super(itemView);
                 cv = (CardView) itemView.findViewById(R.id.cv);
-                messageTv = (TextView) itemView.findViewById(R.id.message_tv);
+                messageTv = (TextView) itemView.findViewById(R.id.phrase_tv);
                 contactTv = (TextView) itemView.findViewById(R.id.contact_tv);
             }
         }

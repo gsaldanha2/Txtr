@@ -46,7 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <LinearLayout
+                <FrameLayout
                     android:id="@+id/cards_tab"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -56,10 +56,9 @@
                     android:paddingTop="@dimen/activity_vertical_margin"
                     android:paddingBottom="@dimen/activity_vertical_margin">
 
-
                     <android.support.v7.widget.RecyclerView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:id="@+id/cards_rv"
                         />
 
@@ -67,11 +66,11 @@
                         android:id="@+id/fab"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@android:drawable/ic_menu_add"
+                        android:src="@drawable/plus_sign"
                         app:elevation="4dp"
-                     />
+                        android:layout_gravity="bottom|end" />
 
-                </LinearLayout>
+                </FrameLayout>
 
                 <LinearLayout
                     android:id="@+id/contacts_tab"
@@ -101,4 +100,5 @@
             </FrameLayout>
         </LinearLayout>
     </TabHost>
+
 </RelativeLayout>

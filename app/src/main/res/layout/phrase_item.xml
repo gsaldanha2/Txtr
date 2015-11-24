@@ -17,14 +17,7 @@
             android:id="@+id/phrase_tv"
             android:layout_alignParentTop="true"
             android:textSize="15sp"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/contact_tv"
-            android:layout_below="@+id/phrase_tv"
-            />
+            android:text="This is a phrase" />
 
     </RelativeLayout>
 
