@@ -9,6 +9,7 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,8 +26,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
@@ -34,19 +37,21 @@ import android.widget.TextView;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
     private List<Card> cards;
     private List<Contact> contacts;
+    private List<String> phrases;
     private RelativeLayout layout;
     private Card undoCard;
 
     private BroadcastReceiver sendBroadcastReceiver;
 
-    private String SENT = "SMS_SENT", currentAddedName = "", currentAddedNumber = "", currentAddedPhrase = "";
-    private Bitmap curredAddedBitmap = null;
+    private String SENT = "SMS_SENT";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
         bar.setTitle("Txtr");
         setSupportActionBar(bar);
 
-        RecyclerView cardsRv = (RecyclerView) findViewById(R.id.cards_rv);
-        RecyclerView contactsRv = (RecyclerView) findViewById(R.id.contacts_rv);
+        final RecyclerView cardsRv = (RecyclerView) findViewById(R.id.cards_rv);
+        final RecyclerView contactsRv = (RecyclerView) findViewById(R.id.contacts_rv);
 
         cardsRv.setHasFixedSize(true);
         contactsRv.setHasFixedSize(true);
@@ -75,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         final RVCardsAdapter adapter = new RVCardsAdapter(cards);
         cardsRv.setAdapter(adapter);
 
-        RVContactsAdapter contactsAdapter = new RVContactsAdapter(contacts);
+        final RVContactsAdapter contactsAdapter = new RVContactsAdapter(contacts);
         contactsRv.setAdapter(contactsAdapter);
 
         SwipeableRecyclerViewTouchListener swipeTouchListener =
@@ -123,26 +128,9 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-                alert.setTitle("Create Card");
-                alert.setMessage("Select Contact and Phrase");
-                LayoutInflater inflater = MainActivity.this.getLayoutInflater();
-                View dialogView = inflater.inflate(R.layout.alert_layout, null);
-                alert.setView(dialogView);
-
-                View contactView = dialogView.findViewById(R.id.contact_view);
-                TextView selectedContactName = (TextView) contactView.findViewById(R.id.contact_name_tv);
-                selectedContactName.setText("Click here to select a contact");
-                TextView selectedContactNumber = (TextView) contactView.findViewById(R.id.contact_number_tv);
-                selectedContactNumber.setText(currentAddedNumber);
-                ImageView selectedContactImage = (ImageView) contactView.findViewById(R.id.contact_iv);
-                selectedContactImage.setImageResource(R.drawable.profile);
-
-                View phraseView = dialogView.findViewById(R.id.phrase_view);
-                TextView selectedPhrase = (TextView) phraseView.findViewById(R.id.phrase_tv);
-                selectedPhrase.setText("Click here to select a phrase");
-                alert.create();
-                alert.show();
+                Intent intent = new Intent(MainActivity.this, CardCreatorActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
 
@@ -172,12 +160,24 @@ public class MainActivity extends AppCompatActivity {
         //</editor-fold>
     }
 
+
+
     public void initializeCards() {
+        phrases = new ArrayList<String>();
+        phrases.add("I'm done");
+        SharedPrefsHandler.saveStringArray(phrases, "phrase_list", this);
+
         cards = new ArrayList<>();
-        cards.add(new Card("Testing app...", "510-367-2406"));
+        ArrayList<String> cardArray = SharedPrefsHandler.loadStringArray("card_msg_list", this);
+        ArrayList<String> cardNumArray = SharedPrefsHandler.loadStringArray("card_num_list", this);
+        for(int i = 0; i < cardArray.size(); i ++) {
+            cards.add(new Card(cardArray.get(i), cardNumArray.get(i)));
+        }
+
+        phrases = SharedPrefsHandler.loadStringArray("phrase_list", this);
+
 
         contacts = new ArrayList<>();
-
         ContentResolver cr = getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                 null, null, null, null);
@@ -264,111 +264,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        unregisterReceiver(sendBroadcastReceiver);
+        try {
+            unregisterReceiver(sendBroadcastReceiver);
+        }catch(Exception e) {}
         super.onStop();
-    }
-
-    class Card {
-        String message;
-        String contactNum;
-
-        Card(String message, String contactNum) {
-            this.message = message;
-            this.contactNum = contactNum;
-        }
-    }
-
-    class Contact {
-        String contactName, contactNum;
-        Bitmap image;
-
-        Contact(String name, String num, Bitmap image) {
-            contactName = name;
-            contactNum = num;
-            this.image = image;
-        }
-    }
-
-    public class RVCardsAdapter extends RecyclerView.Adapter<RVCardsAdapter.CardViewHolder> {
-        List<Card> cards;
-
-        public RVCardsAdapter(List<Card> cards) {
-            this.cards = cards;
-        }
-
-        public int getItemCount() {
-            return cards.size();
-        }
-
-        public CardViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item, viewGroup, false);
-            return new CardViewHolder(v);
-        }
-
-        public void onBindViewHolder(CardViewHolder cvh, int i) {
-            cvh.messageTv.setText(cards.get(i).message);
-            cvh.contactTv.setText(cards.get(i).contactNum);
-        }
-
-        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-            super.onAttachedToRecyclerView(recyclerView);
-        }
-
-        public class CardViewHolder extends RecyclerView.ViewHolder {
-            CardView cv;
-            TextView messageTv, contactTv;
-
-            public CardViewHolder(View itemView) {
-                super(itemView);
-                cv = (CardView) itemView.findViewById(R.id.cv);
-                messageTv = (TextView) itemView.findViewById(R.id.phrase_tv);
-                contactTv = (TextView) itemView.findViewById(R.id.contact_tv);
-            }
-        }
-    }
-
-    public class RVContactsAdapter extends RecyclerView.Adapter<RVContactsAdapter.CardViewHolder> {
-        List<Contact> contacts;
-
-        public RVContactsAdapter(List<Contact> contacts) {
-            this.contacts = contacts;
-        }
-
-        public int getItemCount() {
-            return contacts.size();
-        }
-
-        public CardViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.contact_item, viewGroup, false);
-            return new CardViewHolder(v);
-        }
-
-        public void onBindViewHolder(CardViewHolder cvh, int i) {
-            cvh.contactNameTv.setText(contacts.get(i).contactName);
-            cvh.contactNumTv.setText(contacts.get(i).contactNum);
-            Bitmap bitmap = contacts.get(i).image;
-            if (bitmap != null)
-                cvh.contactIv.setImageBitmap(contacts.get(i).image);
-            else
-                cvh.contactIv.setImageResource(R.drawable.profile);
-        }
-
-        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-            super.onAttachedToRecyclerView(recyclerView);
-        }
-
-        public class CardViewHolder extends RecyclerView.ViewHolder {
-            CardView cv;
-            TextView contactNameTv, contactNumTv;
-            ImageView contactIv;
-
-            public CardViewHolder(View itemView) {
-                super(itemView);
-                cv = (CardView) itemView.findViewById(R.id.cv);
-                contactNameTv = (TextView) itemView.findViewById(R.id.contact_name_tv);
-                contactNumTv = (TextView) itemView.findViewById(R.id.contact_number_tv);
-                contactIv = (ImageView) itemView.findViewById(R.id.contact_iv);
-            }
-        }
     }
 }
