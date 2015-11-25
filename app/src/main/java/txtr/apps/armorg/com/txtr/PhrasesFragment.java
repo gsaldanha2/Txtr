@@ -1,7 +1,7 @@
 package txtr.apps.armorg.com.txtr;
 
 import android.app.Fragment;
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ public class PhrasesFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_phrases, container);
+        View rootView = inflater.inflate(R.layout.fragment_phrases, container, false);
 
         phrases = SharedPrefsHandler.loadStringArray("phrase_list", getActivity());
 
@@ -38,7 +39,17 @@ public class PhrasesFragment extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
                 CardCreatorActivity.phrase = phrases.get(position);
-                view.setBackgroundColor(Color.LTGRAY);
+                if (CardCreatorActivity.phrase != null && CardCreatorActivity.contactNum != null) {
+                    ArrayList<String> cardMsgs = SharedPrefsHandler.loadStringArray("card_msg_list", getActivity());
+                    ArrayList<String> cardNums = SharedPrefsHandler.loadStringArray("card_num_list", getActivity());
+                    cardMsgs.add(CardCreatorActivity.phrase);
+                    cardNums.add(CardCreatorActivity.contactNum);
+                    SharedPrefsHandler.saveStringArray(cardMsgs, "card_msg_list", getActivity());
+                    SharedPrefsHandler.saveStringArray(cardNums, "card_num_list", getActivity());
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    startActivity(intent);
+                    getActivity().finish();
+                }
             }
         }));
 

@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -30,7 +31,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -64,9 +67,11 @@ public class MainActivity extends AppCompatActivity {
 
         final RecyclerView cardsRv = (RecyclerView) findViewById(R.id.cards_rv);
         final RecyclerView contactsRv = (RecyclerView) findViewById(R.id.contacts_rv);
+        final RecyclerView phrasesRv = (RecyclerView) findViewById(R.id.phrases_rv);
 
         cardsRv.setHasFixedSize(true);
         contactsRv.setHasFixedSize(true);
+        phrasesRv.setHasFixedSize(true);
 
         layout = (RelativeLayout) findViewById(R.id.root);
 
@@ -74,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
         cardsRv.setLayoutManager(llm);
         LinearLayoutManager llm2 = new LinearLayoutManager(this);
         contactsRv.setLayoutManager(llm2);
+        LinearLayoutManager llm3 = new LinearLayoutManager(this);
+        phrasesRv.setLayoutManager(llm3);
 
         initializeCards();
         registerMessagingReceivers();
@@ -83,6 +90,9 @@ public class MainActivity extends AppCompatActivity {
 
         final RVContactsAdapter contactsAdapter = new RVContactsAdapter(contacts);
         contactsRv.setAdapter(contactsAdapter);
+
+        final RVPhraseAdapter phraseAdapter = new RVPhraseAdapter(phrases);
+        phrasesRv.setAdapter(phraseAdapter);
 
         SwipeableRecyclerViewTouchListener swipeTouchListener =
                 new SwipeableRecyclerViewTouchListener(cardsRv,
@@ -133,8 +143,8 @@ public class MainActivity extends AppCompatActivity {
 
         cardsRv.addOnItemTouchListener(swipeTouchListener);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton cardFab = (FloatingActionButton) findViewById(R.id.cards_fab);
+        cardFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, CardCreatorActivity.class);
@@ -143,6 +153,34 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        FloatingActionButton phraseFab = (FloatingActionButton) findViewById(R.id.phrases_fab);
+        phraseFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+                alert.setTitle("Add Phrase");
+                alert.setMessage("Enter phrase:");
+                final EditText phraseEt = new EditText(MainActivity.this);
+                alert.setView(phraseEt);
+                alert.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String newPhrase = phraseEt.getText().toString();
+                        phrases.add(newPhrase);
+                        SharedPrefsHandler.saveStringArray(phrases, "phrase_list", MainActivity.this);
+                        phraseAdapter.notifyItemInserted(phrases.indexOf(newPhrase));
+                        phraseAdapter.notifyDataSetChanged();
+                    }
+                });
+                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                alert.show();
+            }
+        });
         //<editor-fold desc="Tab Setup">
         TabHost tabHost = (TabHost) findViewById(R.id.tabHost);
         tabHost.setup();
@@ -168,8 +206,6 @@ public class MainActivity extends AppCompatActivity {
         }
         //</editor-fold>
     }
-
-
 
     public void initializeCards() {
         phrases = new ArrayList<String>();
