@@ -66,7 +66,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/plus_sign"
-                        app:elevation="4dp"
+                        app:elevation="16dp"
                         android:layout_gravity="bottom|end" />
 
                     <TextView
@@ -116,14 +116,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/plus_sign"
-                        app:elevation="4dp"
+                        app:elevation="16dp"
                         android:layout_gravity="bottom|end" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="You don&apos;t have any phrases! :( :("
+                        android:text="You don&apos;t have any phrases! :("
                         android:id="@+id/no_phrases_tv"
                         android:layout_gravity="center_horizontal|top"
                         android:visibility="gone" />

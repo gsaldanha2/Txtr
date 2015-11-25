@@ -52,7 +52,9 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> cardArray, cardNumArray;
     private RelativeLayout layout;
     private Card undoCard;
+    private String undoPhrase;
 
+    private TextView noCardsTv, noPhrasesTv;
     private BroadcastReceiver sendBroadcastReceiver;
 
     private String SENT = "SMS_SENT";
@@ -83,6 +85,11 @@ public class MainActivity extends AppCompatActivity {
         phrasesRv.setLayoutManager(llm3);
 
         initializeCards();
+
+        noCardsTv = (TextView) findViewById(R.id.no_cards_tv);
+        noPhrasesTv = (TextView) findViewById(R.id.no_phrases_tv);
+
+        refreshEmptyRvMsg();
         registerMessagingReceivers();
 
         final RVCardsAdapter adapter = new RVCardsAdapter(cards);
@@ -94,7 +101,48 @@ public class MainActivity extends AppCompatActivity {
         final RVPhraseAdapter phraseAdapter = new RVPhraseAdapter(phrases);
         phrasesRv.setAdapter(phraseAdapter);
 
-        SwipeableRecyclerViewTouchListener swipeTouchListener =
+        SwipeableRecyclerViewTouchListener phraseSwipeListener =
+                new SwipeableRecyclerViewTouchListener(phrasesRv,
+                        new SwipeableRecyclerViewTouchListener.SwipeListener() {
+                            @Override
+                            public boolean canSwipe(int position) {
+                                return true;
+                            }
+
+                            @Override
+                            public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                                for (final int position : reverseSortedPositions) {
+                                    undoPhrase = phrases.get(position);
+                                    phrases.remove(position);
+                                    SharedPrefsHandler.saveStringArray(phrases, "phrase_list", MainActivity.this);
+                                    phraseAdapter.notifyItemRemoved(position);
+
+                                    final Snackbar snackBar = Snackbar.make(layout, "Phrase removed", Snackbar.LENGTH_LONG);
+                                    snackBar.setAction("UNDO", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            phrases.add(undoPhrase);
+                                            SharedPrefsHandler.saveStringArray(phrases, "phrase_list", MainActivity.this);
+                                            phraseAdapter.notifyItemInserted(phrases.indexOf(undoPhrase));
+                                            snackBar.dismiss();
+                                            Snackbar.make(layout, "Action undone", Snackbar.LENGTH_SHORT).show();
+                                            refreshEmptyRvMsg();
+                                        }
+                                    });
+                                    snackBar.setActionTextColor(Color.RED);
+                                    snackBar.show();
+                                    refreshEmptyRvMsg();
+                                }
+                                phraseAdapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                                onDismissedBySwipeLeft(recyclerView, reverseSortedPositions);
+                            }
+                        });
+
+        SwipeableRecyclerViewTouchListener cardSwipeListener =
                 new SwipeableRecyclerViewTouchListener(cardsRv,
                         new SwipeableRecyclerViewTouchListener.SwipeListener() {
                             @Override
@@ -125,10 +173,12 @@ public class MainActivity extends AppCompatActivity {
                                             adapter.notifyItemInserted(cards.indexOf(undoCard));
                                             snackBar.dismiss();
                                             Snackbar.make(layout, "Action undone", Snackbar.LENGTH_SHORT).show();
+                                            refreshEmptyRvMsg();
                                         }
                                     });
                                     snackBar.setActionTextColor(Color.RED);
                                     snackBar.show();
+                                    refreshEmptyRvMsg();
                                 }
                                 adapter.notifyDataSetChanged();
                             }
@@ -141,7 +191,8 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
 
-        cardsRv.addOnItemTouchListener(swipeTouchListener);
+        cardsRv.addOnItemTouchListener(cardSwipeListener);
+        phrasesRv.addOnItemTouchListener(phraseSwipeListener);
 
         FloatingActionButton cardFab = (FloatingActionButton) findViewById(R.id.cards_fab);
         cardFab.setOnClickListener(new View.OnClickListener() {
@@ -170,6 +221,7 @@ public class MainActivity extends AppCompatActivity {
                         SharedPrefsHandler.saveStringArray(phrases, "phrase_list", MainActivity.this);
                         phraseAdapter.notifyItemInserted(phrases.indexOf(newPhrase));
                         phraseAdapter.notifyDataSetChanged();
+                        refreshEmptyRvMsg();
                     }
                 });
                 alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -207,11 +259,19 @@ public class MainActivity extends AppCompatActivity {
         //</editor-fold>
     }
 
-    public void initializeCards() {
-        phrases = new ArrayList<String>();
-        phrases.add("I'm done");
-        SharedPrefsHandler.saveStringArray(phrases, "phrase_list", this);
+    public void refreshEmptyRvMsg() {
+        if(cards.size()==0)
+            noCardsTv.setVisibility(View.VISIBLE);
+        else
+            noCardsTv.setVisibility(View.GONE);
 
+        if(phrases.size() == 0)
+            noPhrasesTv.setVisibility(View.VISIBLE);
+        else
+            noPhrasesTv.setVisibility(View.GONE);
+    }
+
+    public void initializeCards() {
         cards = new ArrayList<>();
         cardArray = SharedPrefsHandler.loadStringArray("card_msg_list", this);
         cardNumArray = SharedPrefsHandler.loadStringArray("card_num_list", this);
