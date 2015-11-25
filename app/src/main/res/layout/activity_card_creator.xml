@@ -12,27 +12,11 @@
     tools:context="txtr.apps.armorg.com.txtr.CardCreatorActivity"
     android:weightSum="1">
 
-    <android.support.v7.widget.RecyclerView
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="232dp"
-        android:id="@+id/contacts_rv"
-        android:background="@drawable/selector"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="226dp"
-        android:id="@+id/phrases_rv"
-        android:layout_marginTop="32dp"
-        android:layout_weight="0.47"
-        andorid:background="@drawable/selector"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Create Card"
-        android:layout_gravity="bottom"
-        android:id="@+id/create_btn"
-        android:background="@color/colorPrimary"
-        android:textColor="@color/white" />
+        android:layout_height="match_parent"
+        android:id="@+id/frame_root"
+        >
+    </FrameLayout>
 
 </LinearLayout>

@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
@@ -24,9 +25,8 @@ import java.util.Set;
 
 public class CardCreatorActivity extends AppCompatActivity {
 
-    private List<String> phrases;
     private List<Contact> contacts;
-    private String phrase, contactNum;
+    public static String phrase, contactNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,34 +35,21 @@ public class CardCreatorActivity extends AppCompatActivity {
 
         initializeCards();
 
-        final RecyclerView phrasesRv = (RecyclerView) findViewById(R.id.phrases_rv);
-        phrasesRv.setHasFixedSize(true);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        phrasesRv.setLayoutManager(llm);
-
         final RecyclerView contactsRv = (RecyclerView) findViewById(R.id.contacts_rv);
         contactsRv.setHasFixedSize(true);
         LinearLayoutManager llm2= new LinearLayoutManager(this);
         contactsRv.setLayoutManager(llm2);
 
-        RVPhraseAdapter adapter = new RVPhraseAdapter(phrases);
-        phrasesRv.setAdapter(adapter);
+
 
         RVContactsAdapter adapter1 = new RVContactsAdapter(contacts);
         contactsRv.setAdapter(adapter1);
 
-        phrasesRv.addOnItemTouchListener(new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                phrase = phrases.get(position);
-                view.setSelected(true);
-            }
-        }));
+
         contactsRv.addOnItemTouchListener(new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 contactNum = contacts.get(position).contactNum;
-                view.setSelected(true);
             }
         }));
 
@@ -94,7 +81,7 @@ public class CardCreatorActivity extends AppCompatActivity {
     }
 
     public void initializeCards() {
-        phrases = SharedPrefsHandler.loadStringArray("phrase_list", this);
+
 
         contacts = new ArrayList<>();
         ContentResolver cr = getContentResolver();
