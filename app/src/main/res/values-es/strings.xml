@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Txtr</string>
+    <string name="actionUndone">Acción deshecha</string>
+    <string name="add">Agregar</string>
+    <string name="addPhrase">Agregar Frase</string>
+    <string name="cancel">Cancelar</string>
+    <string name="cardRemoved">Se ha extraído la tarjeta</string>
+    <string name="cards">Tarjetas</string>
+    <string name="contacts">Contactos</string>
+    <string name="enterPhrase">Introducir frase:</string>
+    <string name="failedSend">Error al enviar</string>
+    <string name="messageSent">Mensaje enviado</string>
+    <string name="noCards">No tienes ninguna tarjeta! :(</string>
+    <string name="noPhrases">No tienes ningún frases! :(</string>
+    <string name="noService">Sin servicio - error al enviar</string>
+    <string name="nullErrorSend">Null - error Error al enviar</string>
+    <string name="phraseRemoved">Frase eliminado</string>
+    <string name="phrases">Frases</string>
+    <string name="radioOff">La radio está apagada - error al enviar</string>
+    <string name="swipeCard">Desliza el dedo de derecha a\nIzquierda para extraer enviar</string>
+    <string name="swipeRemove">Desliza el dedo para quitar</string>
+    <string name="undo">DESHACER</string>
+</resources>

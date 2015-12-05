@@ -2,9 +2,9 @@
 <resources>
     <string name="app_name">Txtr</string>
     <string name="swipeRemove">Swipe to remove</string>
-    <string name="noPhrases">You don't have any phrases! :(</string>
+    <string name="noPhrases">You don\'t have any phrases! :(</string>
     <string name="swipeCard">Swipe right to send\nLeft to remove</string>
-    <string name="noCards">You don't have any cards! :(</string>
+    <string name="noCards">You don\'t have any cards! :(</string>
     <string name="phraseRemoved">Phrase removed</string>
     <string name="undo">UNDO</string>
     <string name="actionUndone">Action undone</string>
