@@ -117,15 +117,15 @@ public class MainActivity extends AppCompatActivity {
                                     SharedPrefsHandler.saveStringArray(phrases, "phrase_list", MainActivity.this);
                                     phraseAdapter.notifyItemRemoved(position);
 
-                                    final Snackbar snackBar = Snackbar.make(layout, "Phrase removed", Snackbar.LENGTH_LONG);
-                                    snackBar.setAction("UNDO", new View.OnClickListener() {
+                                    final Snackbar snackBar = Snackbar.make(layout, getResources().getString(R.string.phraseRemoved), Snackbar.LENGTH_LONG);
+                                    snackBar.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
                                             phrases.add(undoPhrase);
                                             SharedPrefsHandler.saveStringArray(phrases, "phrase_list", MainActivity.this);
                                             phraseAdapter.notifyItemInserted(phrases.indexOf(undoPhrase));
                                             snackBar.dismiss();
-                                            Snackbar.make(layout, "Action undone", Snackbar.LENGTH_SHORT).show();
+                                            Snackbar.make(layout, getResources().getString(R.string.actionUndone), Snackbar.LENGTH_SHORT).show();
                                             refreshEmptyRvMsg();
                                         }
                                     });
@@ -161,8 +161,8 @@ public class MainActivity extends AppCompatActivity {
                                     SharedPrefsHandler.saveStringArray(cardNumArray, "card_num_list", MainActivity.this);
                                     adapter.notifyItemRemoved(position);
 
-                                    final Snackbar snackBar = Snackbar.make(layout, "Card removed", Snackbar.LENGTH_LONG);
-                                    snackBar.setAction("UNDO", new View.OnClickListener() {
+                                    final Snackbar snackBar = Snackbar.make(layout, getResources().getString(R.string.cardRemoved), Snackbar.LENGTH_LONG);
+                                    snackBar.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
                                             cards.add(undoCard);
@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                                             SharedPrefsHandler.saveStringArray(cardNumArray, "card_num_list", MainActivity.this);
                                             adapter.notifyItemInserted(cards.indexOf(undoCard));
                                             snackBar.dismiss();
-                                            Snackbar.make(layout, "Action undone", Snackbar.LENGTH_SHORT).show();
+                                            Snackbar.make(layout, getResources().getString(R.string.actionUndone), Snackbar.LENGTH_SHORT).show();
                                             refreshEmptyRvMsg();
                                         }
                                     });
@@ -209,11 +209,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-                alert.setTitle("Add Phrase");
-                alert.setMessage("Enter phrase:");
+                alert.setTitle(getResources().getString(R.string.addPhrase));
+                alert.setMessage(getResources().getString(R.string.enterPhrase));
                 final EditText phraseEt = new EditText(MainActivity.this);
                 alert.setView(phraseEt);
-                alert.setPositiveButton("Add", new DialogInterface.OnClickListener() {
+                alert.setPositiveButton(getResources().getString(R.string.add), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String newPhrase = phraseEt.getText().toString();
@@ -224,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
                         refreshEmptyRvMsg();
                     }
                 });
-                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                alert.setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
@@ -239,17 +239,17 @@ public class MainActivity extends AppCompatActivity {
 
         TabHost.TabSpec tabSpec = tabHost.newTabSpec("cards");
         tabSpec.setContent(R.id.cards_tab);
-        tabSpec.setIndicator("Cards");
+        tabSpec.setIndicator(getResources().getString(R.string.cards));
         tabHost.addTab(tabSpec);
 
         tabSpec = tabHost.newTabSpec("contacts");
         tabSpec.setContent(R.id.contacts_tab);
-        tabSpec.setIndicator("Contacts");
+        tabSpec.setIndicator(getResources().getString(R.string.contacts));
         tabHost.addTab(tabSpec);
 
         tabSpec = tabHost.newTabSpec("phrases");
         tabSpec.setContent(R.id.phrases_tab);
-        tabSpec.setIndicator("Phrases");
+        tabSpec.setIndicator(getResources().getString(R.string.phrases));
         tabHost.addTab(tabSpec);
 
         for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++) {
@@ -338,19 +338,19 @@ public class MainActivity extends AppCompatActivity {
             public void onReceive(Context arg0, Intent arg1) {
                 switch (getResultCode()) {
                     case Activity.RESULT_OK:
-                        Snackbar.make(layout, "Message Sent", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(layout, getResources().getString(R.string.messageSent), Snackbar.LENGTH_SHORT).show();
                         break;
                     case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-                        Snackbar.make(layout, "Failed to send", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(layout, getResources().getString(R.string.failedSend), Snackbar.LENGTH_SHORT).show();
                         break;
                     case SmsManager.RESULT_ERROR_NO_SERVICE:
-                        Snackbar.make(layout, "No service - can't send", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(layout, getResources().getString(R.string.noService), Snackbar.LENGTH_SHORT).show();
                         break;
                     case SmsManager.RESULT_ERROR_NULL_PDU:
-                        Snackbar.make(layout, "Null error - can't send", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(layout, getResources().getString(R.string.nullErrorSend), Snackbar.LENGTH_SHORT).show();
                         break;
                     case SmsManager.RESULT_ERROR_RADIO_OFF:
-                        Snackbar.make(layout, "Radio is off - can't send", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(layout, getResources().getString(R.string.radioOff), Snackbar.LENGTH_SHORT).show();
                         break;
                 }
             }

@@ -66,17 +66,25 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/plus_sign"
-                        app:elevation="16dp"
                         android:layout_gravity="bottom|end" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="You don&apos;t have any cards! :("
+                        android:text="@string/noCards"
                         android:id="@+id/no_cards_tv"
                         android:layout_gravity="center_horizontal|top"
                         android:visibility="gone" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/swipeCard"
+                        android:id="@+id/textView"
+                        android:textAlignment="center"
+                        android:layout_gravity="center_horizontal|bottom" />
 
                 </FrameLayout>
 
@@ -116,17 +124,25 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/plus_sign"
-                        app:elevation="16dp"
                         android:layout_gravity="bottom|end" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:text="You don&apos;t have any phrases! :("
+                        android:text="@string/noPhrases"
                         android:id="@+id/no_phrases_tv"
                         android:layout_gravity="center_horizontal|top"
                         android:visibility="gone" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="@string/swipeRemove"
+                        android:id="@+id/textView10"
+                        android:textAlignment="center"
+                        android:layout_gravity="center_horizontal|bottom" />
                 </FrameLayout>
 
             </FrameLayout>
