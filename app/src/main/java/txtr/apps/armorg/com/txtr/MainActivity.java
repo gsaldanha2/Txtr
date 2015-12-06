@@ -30,6 +30,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -66,6 +68,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar bar = (Toolbar) findViewById(R.id.toolbar);
         bar.setTitle("Txtr");
         setSupportActionBar(bar);
+
+        if(SharedPrefsHandler.loadBoolean("firstTime", this)) {
+            Intent intent = new Intent(MainActivity.this, WelcomeScreenActivity.class);
+            startActivity(intent);
+        }
 
         final RecyclerView cardsRv = (RecyclerView) findViewById(R.id.cards_rv);
         final RecyclerView contactsRv = (RecyclerView) findViewById(R.id.contacts_rv);

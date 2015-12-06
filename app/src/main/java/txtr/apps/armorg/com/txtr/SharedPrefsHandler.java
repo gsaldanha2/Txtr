@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class SharedPrefsHandler {
     public static boolean saveStringArray(List<String> array, String arrayName, Context mContext) {
-        SharedPreferences prefs = mContext.getSharedPreferences("preferencename", 0);
+        SharedPreferences prefs = mContext.getSharedPreferences("txtr", 0);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt(arrayName +"_size", array.size());
         for(int i=0;i<array.size();i++)
@@ -20,7 +20,7 @@ public class SharedPrefsHandler {
     }
 
     public static ArrayList<String> loadStringArray(String arrayName, Context mContext) {
-        SharedPreferences prefs = mContext.getSharedPreferences("preferencename", 0);
+        SharedPreferences prefs = mContext.getSharedPreferences("txtr", 0);
         int size = prefs.getInt(arrayName + "_size", 0);
         ArrayList<String> array = new ArrayList<String>();
         for(int i=0;i<size;i++) {
@@ -29,5 +29,10 @@ public class SharedPrefsHandler {
                 array.add(str);
         }
         return array;
+    }
+
+    public static boolean loadBoolean(String boolName, Context mContext) {
+        SharedPreferences prefs = mContext.getSharedPreferences("txtr", 0);
+        return prefs.getBoolean(boolName, true);
     }
 }
