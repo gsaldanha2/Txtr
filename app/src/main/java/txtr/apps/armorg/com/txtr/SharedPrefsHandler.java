@@ -31,6 +31,13 @@ public class SharedPrefsHandler {
         return array;
     }
 
+    public static boolean saveBoolean(String boolName, boolean bool, Context mContext) {
+        SharedPreferences prefs = mContext.getSharedPreferences("txtr", 0);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(boolName, bool);
+        return editor.commit();
+    }
+
     public static boolean loadBoolean(String boolName, Context mContext) {
         SharedPreferences prefs = mContext.getSharedPreferences("txtr", 0);
         return prefs.getBoolean(boolName, true);

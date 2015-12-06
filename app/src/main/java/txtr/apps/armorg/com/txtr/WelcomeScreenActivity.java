@@ -150,6 +150,7 @@ public class WelcomeScreenActivity extends AppCompatActivity {
     }
 
     private void endTutorial() {
+        SharedPrefsHandler.saveBoolean("firstTime", false, this);
         finish();
         overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
     }
