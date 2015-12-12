@@ -40,6 +40,9 @@ import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -68,6 +71,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar bar = (Toolbar) findViewById(R.id.toolbar);
         bar.setTitle("Txtr");
         setSupportActionBar(bar);
+
+        AnalyticsApplication application = (AnalyticsApplication) getApplication();
+        Tracker mTracker = application.getDefaultTracker();
+        mTracker.setScreenName("MainActivity");
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
         if(SharedPrefsHandler.loadBoolean("firstTime", this)) {
             Intent intent = new Intent(MainActivity.this, WelcomeScreenActivity.class);
