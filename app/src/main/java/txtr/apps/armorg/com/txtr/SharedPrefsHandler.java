@@ -42,4 +42,16 @@ public class SharedPrefsHandler {
         SharedPreferences prefs = mContext.getSharedPreferences("txtr", 0);
         return prefs.getBoolean(boolName, true);
     }
+
+    public static boolean saveInt(String intName, int i, Context mContext) {
+        SharedPreferences prefs = mContext.getSharedPreferences("txtr", 0);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt(intName, i);
+        return editor.commit();
+    }
+
+    public static int loadInt(String intName, Context mContext) {
+        SharedPreferences prefs = mContext.getSharedPreferences("txtr", 0);
+        return prefs.getInt(intName, 0);
+    }
 }

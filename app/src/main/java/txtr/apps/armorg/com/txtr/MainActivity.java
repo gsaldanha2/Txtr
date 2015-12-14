@@ -3,6 +3,7 @@ package txtr.apps.armorg.com.txtr;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -80,6 +81,40 @@ public class MainActivity extends AppCompatActivity {
         if(SharedPrefsHandler.loadBoolean("firstTime", this)) {
             Intent intent = new Intent(MainActivity.this, WelcomeScreenActivity.class);
             startActivity(intent);
+        }
+
+        int sessions = SharedPrefsHandler.loadInt("sessions", this);
+        boolean notRated = SharedPrefsHandler.loadBoolean("notRated", this);
+        sessions++;
+        SharedPrefsHandler.saveInt("sessions", sessions, this);
+
+        if(sessions == 5 || (sessions % 15 == 0 && notRated == true)) {
+            AlertDialog.Builder balert = new AlertDialog.Builder(this);
+            balert.setTitle("Rate Txtr");
+            balert.setMessage("Tell us how you like Txtr!");
+            balert.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Uri uri = Uri.parse("market://details?id=" + MainActivity.this.getPackageName());
+                    Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+                    goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                            Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                            Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                    SharedPrefsHandler.saveBoolean("notRated", false, MainActivity.this);
+                    try {
+                        startActivity(goToMarket);
+                    } catch (ActivityNotFoundException e) {
+                        startActivity(new Intent(Intent.ACTION_VIEW,
+                                Uri.parse("http://play.google.com/store/apps/details?id=" + MainActivity.this.getPackageName())));
+                    }
+                }
+            });
+            balert.setNegativeButton("Later", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+            balert.show();
         }
 
         final RecyclerView cardsRv = (RecyclerView) findViewById(R.id.cards_rv);
