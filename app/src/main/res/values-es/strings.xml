@@ -3,7 +3,7 @@
     <string name="app_name">Txtr</string>
     <string name="actionUndone">Acción deshecha</string>
     <string name="add">Agregar</string>
-    <string name="addPhrase">Agregar Frase</string>
+    <string name="addPhrase">Agregar la Frase</string>
     <string name="cancel">Cancelar</string>
     <string name="cardRemoved">Se ha extraído la tarjeta</string>
     <string name="cards">Tarjetas</string>
@@ -18,7 +18,15 @@
     <string name="phraseRemoved">Frase eliminado</string>
     <string name="phrases">Frases</string>
     <string name="radioOff">La radio está apagada - error al enviar</string>
-    <string name="swipeCard">Desliza el dedo de derecha a\nIzquierda para extraer enviar</string>
+    <string name="swipeCard">Derecho a enviar\nIzquierda para eliminar</string>
     <string name="swipeRemove">Desliza el dedo para quitar</string>
     <string name="undo">DESHACER</string>
+    <string name="welcome">Bienvenido a Txtr</string>
+    <string name="createPhrase">Cree una frase</string>
+    <string name="clickPhrasesTab">En primer lugar haga clic en la pestaña frases</string>
+    <string name="plusIconPhrase">A continuación, haga clic en el icono\n más (+) e introduzca una frase</string>
+    <string name="createCard">Crear una tarjeta</string>
+    <string name="clickCardsTab">En primer lugar haga clic en la pestaña de tarjetas</string>
+    <string name="plusIconCard">A continuación, haga clic en el icono más (+)\ny seleccione un contacto y frase</string>
+    <string name="getStarted">Desliza el dedo para quitar\nPulse la flecha para continuar</string>
 </resources>

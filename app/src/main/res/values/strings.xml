@@ -20,4 +20,12 @@
     <string name="noService">No service - failed to send</string>
     <string name="nullErrorSend">Null error - failed to send</string>
     <string name="radioOff">Radio is off - failed to send</string>
+    <string name="welcome">Welcome To Txtr</string>
+    <string name="createPhrase">Create a Phrase</string>
+    <string name="clickPhrasesTab">First click the Phrases tab</string>
+    <string name="plusIconPhrase">Then, click the plus icon\nand enter a phrase</string>
+    <string name="createCard">Create a Card</string>
+    <string name="clickCardsTab">First click the Cards tab</string>
+    <string name="plusIconCard">Then, click the plus icon\nand choose a contact and phrase</string>
+    <string name="getStarted">Let\'s get started!\nPress the arrow to continue</string>
 </resources>

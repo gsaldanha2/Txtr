@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Txtr</string>
+    <string name="actionUndone">操作撤消</string>
+    <string name="add">添加</string>
+    <string name="addPhrase">添加短语</string>
+    <string name="cancel">取消</string>
+    <string name="cardRemoved">卡移除</string>
+    <string name="cards">卡。</string>
+    <string name="clickCardsTab">首先单击“卡”选项卡</string>
+    <string name="clickPhrasesTab">第一次单击“短语”页签</string>
+    <string name="contacts">联系人</string>
+    <string name="createCard">创建卡片</string>
+    <string name="createPhrase">创建短语。</string>
+    <string name="enterPhrase">输入的短语:</string>
+    <string name="failedSend">发送失败</string>
+    <string name="messageSent">消息已发送</string>
+    <string name="noCards">你没有任何卡! :(</string>
+    <string name="noPhrases">你不要有任何的短语! :(</string>
+    <string name="noService">无服务-发送失败</string>
+    <string name="nullErrorSend">错误-无法发送</string>
+    <string name="phraseRemoved">删除短语</string>
+    <string name="phrases">短语</string>
+    <string name="plusIconCard">然后,单击加号图标。\n并选择联系人和短语。</string>
+    <string name="plusIconPhrase">然后,单击加号图标。\n并输入短语。</string>
+    <string name="radioOff">无线电已关闭-发送失败</string>
+    <string name="swipeCard">刷卡右键发送\n左侧以将其卸下</string>
+    <string name="swipeRemove">滑动以卸下</string>
+    <string name="undo">撤消</string>
+    <string name="welcome">欢迎 Txtr</string>
+    <string name="getStarted">让我们的开始!\n按下向下箭头以继续</string>
+</resources>
