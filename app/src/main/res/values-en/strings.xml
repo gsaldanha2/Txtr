@@ -29,4 +29,5 @@
     <string name="clickCardsTab">First click the Cards tab</string>
     <string name="plusIconCard">Then, click the plus icon\nand choose a contact and phrase</string>
     <string name="getStarted">Let\'s get started!\nPress the arrow to continue</string>
+    <string name="spam">Spam Protection - Try later</string>
 </resources>

@@ -29,4 +29,5 @@
     <string name="undo">撤消</string>
     <string name="welcome">欢迎 Txtr</string>
     <string name="getStarted">让我们的开始!\n按下向下箭头以继续</string>
+    <string name="spam">垃圾郵件保護-稍後再試</string>
 </resources>

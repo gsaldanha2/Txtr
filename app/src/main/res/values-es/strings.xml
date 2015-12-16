@@ -29,4 +29,5 @@
     <string name="clickCardsTab">En primer lugar haga clic en la pestaña de tarjetas</string>
     <string name="plusIconCard">A continuación, haga clic en el icono más (+)\ny seleccione un contacto y frase</string>
     <string name="getStarted">Desliza el dedo para quitar\nPulse la flecha para continuar</string>
+    <string name="spam">Protección contra spam - inténtelo más adelante</string>
 </resources>

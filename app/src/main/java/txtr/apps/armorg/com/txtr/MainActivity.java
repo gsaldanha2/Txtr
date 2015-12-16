@@ -46,6 +46,7 @@ import com.google.android.gms.analytics.Tracker;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private RelativeLayout layout;
     private Card undoCard;
     private String undoPhrase;
-
+    private HashMap<String, Integer> spamMap; //stores recent numbers that were sent to, to prevent spam
     private TextView noCardsTv, noPhrasesTv;
     private BroadcastReceiver sendBroadcastReceiver;
 
@@ -81,40 +82,6 @@ public class MainActivity extends AppCompatActivity {
         if(SharedPrefsHandler.loadBoolean("firstTime", this)) {
             Intent intent = new Intent(MainActivity.this, WelcomeScreenActivity.class);
             startActivity(intent);
-        }
-
-        int sessions = SharedPrefsHandler.loadInt("sessions", this);
-        boolean notRated = SharedPrefsHandler.loadBoolean("notRated", this);
-        sessions++;
-        SharedPrefsHandler.saveInt("sessions", sessions, this);
-
-        if(sessions == 5 || (sessions % 15 == 0 && notRated == true)) {
-            AlertDialog.Builder balert = new AlertDialog.Builder(this);
-            balert.setTitle("Rate Txtr");
-            balert.setMessage("Tell us how you like Txtr!");
-            balert.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Uri uri = Uri.parse("market://details?id=" + MainActivity.this.getPackageName());
-                    Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
-                    goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
-                            Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
-                            Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-                    SharedPrefsHandler.saveBoolean("notRated", false, MainActivity.this);
-                    try {
-                        startActivity(goToMarket);
-                    } catch (ActivityNotFoundException e) {
-                        startActivity(new Intent(Intent.ACTION_VIEW,
-                                Uri.parse("http://play.google.com/store/apps/details?id=" + MainActivity.this.getPackageName())));
-                    }
-                }
-            });
-            balert.setNegativeButton("Later", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                }
-            });
-            balert.show();
         }
 
         final RecyclerView cardsRv = (RecyclerView) findViewById(R.id.cards_rv);
@@ -331,7 +298,6 @@ public class MainActivity extends AppCompatActivity {
 
         phrases = SharedPrefsHandler.loadStringArray("phrase_list", this);
 
-
         contacts = new ArrayList<>();
         ContentResolver cr = getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
@@ -357,6 +323,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         cur.close();
+
+        spamMap = new HashMap<String, Integer>();
+        for(String num : cardNumArray) {
+            spamMap.put(num, 0);
+        }
     }
 
     public Bitmap openPhoto(String contactId) {
@@ -412,9 +383,49 @@ public class MainActivity extends AppCompatActivity {
     public void sendMessage(String msg, String contactNum) {
         PendingIntent sentPI = PendingIntent.getBroadcast(this, 0,
                 new Intent(SENT), 0);
-
-        SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(contactNum, null, msg, sentPI, null);
+        if(spamMap.get(contactNum) < 9) {
+            int i = contactNum.indexOf('[');
+            String contactNumC = contactNum.substring(0, i);
+            SmsManager sms = SmsManager.getDefault();
+            sms.sendTextMessage(contactNumC, null, msg, sentPI, null);
+            System.out.println(spamMap.toString());
+            System.out.println(contactNum);
+            spamMap.put(contactNum, spamMap.get(contactNum) + 1);
+            int sessions = SharedPrefsHandler.loadInt("sessions", this);
+            boolean notRated = SharedPrefsHandler.loadBoolean("notRated", this);
+            sessions++;
+            SharedPrefsHandler.saveInt("sessions", sessions, this);
+            if(sessions % 5 == 0 && notRated == true && sessions != 0) {
+                AlertDialog.Builder balert = new AlertDialog.Builder(this);
+                balert.setTitle("Rate Txtr");
+                balert.setMessage("Tell us how you like Txtr!");
+                balert.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Uri uri = Uri.parse("market://details?id=" + MainActivity.this.getPackageName());
+                        Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+                        goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                                Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
+                                Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                        SharedPrefsHandler.saveBoolean("notRated", false, MainActivity.this);
+                        try {
+                            startActivity(goToMarket);
+                        } catch (ActivityNotFoundException e) {
+                            startActivity(new Intent(Intent.ACTION_VIEW,
+                                    Uri.parse("http://play.google.com/store/apps/details?id=" + MainActivity.this.getPackageName())));
+                        }
+                    }
+                });
+                balert.setNegativeButton("Later", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                balert.show();
+            }
+        }else {
+            Snackbar.make(layout, getResources().getString(R.string.spam), Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     @Override
