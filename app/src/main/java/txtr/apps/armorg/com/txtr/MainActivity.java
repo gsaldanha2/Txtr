@@ -39,6 +39,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
+import android.widget.TabWidget;
 import android.widget.TextView;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -85,19 +86,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         final RecyclerView cardsRv = (RecyclerView) findViewById(R.id.cards_rv);
-        final RecyclerView contactsRv = (RecyclerView) findViewById(R.id.contacts_rv);
         final RecyclerView phrasesRv = (RecyclerView) findViewById(R.id.phrases_rv);
 
         cardsRv.setHasFixedSize(true);
-        contactsRv.setHasFixedSize(true);
         phrasesRv.setHasFixedSize(true);
 
         layout = (RelativeLayout) findViewById(R.id.root);
 
         LinearLayoutManager llm = new LinearLayoutManager(this);
         cardsRv.setLayoutManager(llm);
-        LinearLayoutManager llm2 = new LinearLayoutManager(this);
-        contactsRv.setLayoutManager(llm2);
         LinearLayoutManager llm3 = new LinearLayoutManager(this);
         phrasesRv.setLayoutManager(llm3);
 
@@ -111,9 +108,6 @@ public class MainActivity extends AppCompatActivity {
 
         final RVCardsAdapter adapter = new RVCardsAdapter(cards);
         cardsRv.setAdapter(adapter);
-
-        final RVContactsAdapter contactsAdapter = new RVContactsAdapter(contacts);
-        contactsRv.setAdapter(contactsAdapter);
 
         final RVPhraseAdapter phraseAdapter = new RVPhraseAdapter(phrases);
         phrasesRv.setAdapter(phraseAdapter);
@@ -254,20 +248,27 @@ public class MainActivity extends AppCompatActivity {
         TabHost tabHost = (TabHost) findViewById(R.id.tabHost);
         tabHost.setup();
 
+
         TabHost.TabSpec tabSpec = tabHost.newTabSpec("cards");
         tabSpec.setContent(R.id.cards_tab);
         tabSpec.setIndicator(getResources().getString(R.string.cards));
-        tabHost.addTab(tabSpec);
-
-        tabSpec = tabHost.newTabSpec("contacts");
-        tabSpec.setContent(R.id.contacts_tab);
-        tabSpec.setIndicator(getResources().getString(R.string.contacts));
         tabHost.addTab(tabSpec);
 
         tabSpec = tabHost.newTabSpec("phrases");
         tabSpec.setContent(R.id.phrases_tab);
         tabSpec.setIndicator(getResources().getString(R.string.phrases));
         tabHost.addTab(tabSpec);
+
+        TabWidget widget = tabHost.getTabWidget();
+        for(int i = 0; i < widget.getChildCount(); i++) {
+            View v = widget.getChildAt(i);
+
+            TextView tv = (TextView)v.findViewById(android.R.id.title);
+            if(tv == null) {
+                continue;
+            }
+            v.setBackgroundResource(R.drawable.custom_tab_selector);
+        }
 
         for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++) {
             TextView tv = (TextView) tabHost.getTabWidget().getChildAt(i).findViewById(android.R.id.title);
@@ -388,8 +389,6 @@ public class MainActivity extends AppCompatActivity {
             String contactNumC = contactNum.substring(0, i);
             SmsManager sms = SmsManager.getDefault();
             sms.sendTextMessage(contactNumC, null, msg, sentPI, null);
-            System.out.println(spamMap.toString());
-            System.out.println(contactNum);
             spamMap.put(contactNum, spamMap.get(contactNum) + 1);
             int sessions = SharedPrefsHandler.loadInt("sessions", this);
             boolean notRated = SharedPrefsHandler.loadBoolean("notRated", this);

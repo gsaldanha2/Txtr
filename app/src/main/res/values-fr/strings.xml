@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Txtr</string>
+    <string name="actionUndone">Action annulée</string>
+    <string name="add">Ajouter</string>
+    <string name="addPhrase">Ajouter une expression</string>
+    <string name="cancel">Annuler</string>
+    <string name="cardRemoved">Carte retirée</string>
+    <string name="cards">Cartes</string>
+    <string name="clickCardsTab">Cliquez d\'abord sur l\'onglet Cartes.</string>
+    <string name="clickPhrasesTab">Cliquez d\'abord sur l\'onglet Phrases</string>
+    <string name="contacts">Contacts</string>
+    <string name="createCard">Créer une carte</string>
+    <string name="createPhrase">Créer une expression</string>
+    <string name="enterPhrase">Entrez une expression:</string>
+    <string name="failedSend">Echec de l\'envoi</string>
+    <string name="getStarted">Commençons!\nAppuyez sur la flèche pour continuer</string>
+    <string name="messageSent">Message envoyé</string>
+    <string name="noCards">Vous n\'avez aucune carte! :(</string>
+    <string name="noPhrases">Vous n\'avez pas de phrases! :(</string>
+    <string name="noService">Aucun service - Echec de l\'envoi</string>
+    <string name="nullErrorSend">Erreur nulle - Echec de l\'envoi</string>
+    <string name="phraseRemoved">Phrase supprimée</string>
+    <string name="phrases">Phrases</string>
+    <string name="plusIconCard">Puis, cliquez sur l\'icône Plus\net choisissez un contact et une phrase</string>
+    <string name="plusIconPhrase">Puis, cliquez sur l\'icône plus,\npuis saisir une phrase</string>
+    <string name="radioOff">La radio est désactivée - Echec de l\'envoi</string>
+    <string name="spam">Protection contre le spam - essayer plus tard</string>
+    <string name="swipeCard">Balayez vers la droite pour envoyer\nGauche à retirer</string>
+    <string name="swipeRemove">Balayer pour supprimer</string>
+    <string name="undo">ANNULER</string>
+    <string name="welcome">Bienvenue à Txtr</string>
+</resources>
