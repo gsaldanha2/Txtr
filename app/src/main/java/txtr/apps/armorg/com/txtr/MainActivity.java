@@ -68,13 +68,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
-        adInterstitial = com.tappx.TAPPXAdInterstitial.Configure(this, TAPPX_KEY,
-                new AdListener() {
-                    @Override public void onAdLoaded() {
-                        com.tappx.TAPPXAdInterstitial.Show(adInterstitial);
-                    }
-                });
-
         final RecyclerView cardsRv = (RecyclerView) findViewById(R.id.cards_rv);
         final RecyclerView phrasesRv = (RecyclerView) findViewById(R.id.phrases_rv);
 
@@ -381,6 +374,12 @@ public class MainActivity extends AppCompatActivity {
             sms.sendTextMessage(contactNumC, null, msg, sentPI, null);
             spamMap.put(contactNum, spamMap.get(contactNum) + 1);
 
+            adInterstitial = com.tappx.TAPPXAdInterstitial.Configure(this, TAPPX_KEY,
+                    new AdListener() {
+                        @Override public void onAdLoaded() {
+                            com.tappx.TAPPXAdInterstitial.Show(adInterstitial);
+                        }
+                    });
             adInterstitial.show();
 
             int sessions = SharedPrefsHandler.loadInt("sessions", this);
