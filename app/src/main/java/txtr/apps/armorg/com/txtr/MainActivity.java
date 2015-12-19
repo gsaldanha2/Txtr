@@ -32,6 +32,8 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdListener;
+
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private HashMap<String, Integer> spamMap; //stores recent numbers that were sent to, to prevent spam
     private TextView noCardsTv, noPhrasesTv;
     private BroadcastReceiver sendBroadcastReceiver;
-
+    private final String TAPPX_KEY = "/120940746/Pub-7193-Android-5856";
+    private com.google.android.gms.ads.doubleclick.PublisherInterstitialAd adInterstitial = null;
     private String SENT = "SMS_SENT";
 
     @Override
@@ -64,6 +67,13 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, WelcomeScreenActivity.class);
             startActivity(intent);
         }
+
+        adInterstitial = com.tappx.TAPPXAdInterstitial.Configure(this, TAPPX_KEY,
+                new AdListener() {
+                    @Override public void onAdLoaded() {
+                        com.tappx.TAPPXAdInterstitial.Show(adInterstitial);
+                    }
+                });
 
         final RecyclerView cardsRv = (RecyclerView) findViewById(R.id.cards_rv);
         final RecyclerView phrasesRv = (RecyclerView) findViewById(R.id.phrases_rv);
@@ -370,6 +380,9 @@ public class MainActivity extends AppCompatActivity {
             SmsManager sms = SmsManager.getDefault();
             sms.sendTextMessage(contactNumC, null, msg, sentPI, null);
             spamMap.put(contactNum, spamMap.get(contactNum) + 1);
+
+            adInterstitial.show();
+
             int sessions = SharedPrefsHandler.loadInt("sessions", this);
             boolean notRated = SharedPrefsHandler.loadBoolean("notRated", this);
             sessions++;
