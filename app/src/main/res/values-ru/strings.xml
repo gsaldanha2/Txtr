@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Txtr</string>
+    <string name="actionUndone">Отменить действие</string>
+    <string name="add">Добавить</string>
+    <string name="addPhrase">Добавить фразу</string>
+    <string name="cancel">Отмена</string>
+    <string name="cardRemoved">Плата извлечена</string>
+    <string name="cards">Карты</string>
+    <string name="clickCardsTab">Сначала нажмите на вкладке Карты</string>
+    <string name="clickPhrasesTab">Сначала нажмите на вкладку фраз</string>
+    <string name="contacts">Контакты</string>
+    <string name="createCard">Создание карт</string>
+    <string name="createPhrase">Создайте выражение</string>
+    <string name="enterPhrase">Введите фразу:</string>
+    <string name="failedSend">Не удалось отправить</string>
+    <string name="getStarted">Начнем! нажмите стрелку,\nчтобы продолжить</string>
+    <string name="messageSent">Сообщение отправлено</string>
+    <string name="noCards">У вас нет карты! :(</string>
+    <string name="noPhrases">Вы не фразы! :(</string>
+    <string name="noService">Нет службы - не удалось отправить</string>
+    <string name="nullErrorSend">Null ошибка - не удалось отправить</string>
+    <string name="phraseRemoved">Фраза снята</string>
+    <string name="phrases">Фразы</string>
+    <string name="plusIconCard">Затем нажмите на значок "плюс"\nи выберите контакт и фразы</string>
+    <string name="plusIconPhrase">Затем нажмите на значок "плюс"\nи введите фразу</string>
+    <string name="radioOff">Радио выключено - не удалось отправить</string>
+    <string name="spam">Защита от спама - повторите попытку позже</string>
+    <string name="swipeCard">Проведите пальцем по экрану вправо для отправки\Nслева направо для удаления</string>
+    <string name="swipeRemove">Проведите пальцем для снятия</string>
+    <string name="undo">Ослабьте затяжку</string>
+    <string name="welcome">Добро пожаловать в Txtr</string>
+</resources>
