@@ -11,7 +11,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,35 +21,21 @@ import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -74,11 +59,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar bar = (Toolbar) findViewById(R.id.toolbar);
         bar.setTitle("Txtr");
         setSupportActionBar(bar);
-
-        AnalyticsApplication application = (AnalyticsApplication) getApplication();
-        Tracker mTracker = application.getDefaultTracker();
-        mTracker.setScreenName("MainActivity");
-        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
         if(SharedPrefsHandler.loadBoolean("firstTime", this)) {
             Intent intent = new Intent(MainActivity.this, WelcomeScreenActivity.class);
