@@ -39,11 +39,11 @@ public class PhrasesFragment extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
                 CardCreatorActivity.phrase = phrases.get(position);
-                if (CardCreatorActivity.phrase != null && CardCreatorActivity.contactNum != null) {
+                if (CardCreatorActivity.phrase != null && CardCreatorActivity.contactName != null) {
                     ArrayList<String> cardMsgs = SharedPrefsHandler.loadStringArray("card_msg_list", getActivity());
                     ArrayList<String> cardNums = SharedPrefsHandler.loadStringArray("card_num_list", getActivity());
                     cardMsgs.add(CardCreatorActivity.phrase);
-                    cardNums.add(CardCreatorActivity.contactNum);
+                    cardNums.add(CardCreatorActivity.contactName);
                     SharedPrefsHandler.saveStringArray(cardMsgs, "card_msg_list", getActivity());
                     SharedPrefsHandler.saveStringArray(cardNums, "card_num_list", getActivity());
                     Intent intent = new Intent(getActivity(), MainActivity.class);

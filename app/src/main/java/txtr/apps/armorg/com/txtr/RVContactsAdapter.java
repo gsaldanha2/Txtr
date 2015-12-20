@@ -29,7 +29,7 @@ public class RVContactsAdapter extends RecyclerView.Adapter<RVContactsAdapter.Ca
 
         public void onBindViewHolder(CardViewHolder cvh, int i) {
             cvh.contactNameTv.setText(contacts.get(i).contactName);
-            cvh.contactNumTv.setText(contacts.get(i).contactNum);
+            cvh.contactNumTv.setText(contacts.get(i).contactName);
             Bitmap bitmap = contacts.get(i).image;
             if (bitmap != null)
                 cvh.contactIv.setImageBitmap(contacts.get(i).image);

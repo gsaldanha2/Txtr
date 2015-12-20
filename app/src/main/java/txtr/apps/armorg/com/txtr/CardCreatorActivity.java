@@ -26,7 +26,7 @@ import java.util.Set;
 
 public class CardCreatorActivity extends AppCompatActivity {
 
-    public static String phrase, contactNum;
+    public static String phrase, contactName;
     public static FragmentManager fm;
 
     @Override

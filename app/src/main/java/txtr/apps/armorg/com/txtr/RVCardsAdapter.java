@@ -27,7 +27,7 @@ public class RVCardsAdapter extends RecyclerView.Adapter<RVCardsAdapter.CardView
 
         public void onBindViewHolder(CardViewHolder cvh, int i) {
             cvh.messageTv.setText(cards.get(i).message);
-            cvh.contactTv.setText(cards.get(i).contactNum);
+            cvh.contactTv.setText(cards.get(i).contactName);
         }
 
         public void onAttachedToRecyclerView(RecyclerView recyclerView) {

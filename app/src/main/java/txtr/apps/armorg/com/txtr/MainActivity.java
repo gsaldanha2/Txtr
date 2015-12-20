@@ -25,6 +25,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -161,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
                                         public void onClick(View v) {
                                             cards.add(undoCard);
                                             cardArray.add(undoCard.message);
-                                            cardNumArray.add(undoCard.contactNum);
+                                            cardNumArray.add(undoCard.contactName);
                                             SharedPrefsHandler.saveStringArray(cardArray, "card_msg_list", MainActivity.this);
                                             SharedPrefsHandler.saveStringArray(cardNumArray, "card_num_list", MainActivity.this);
                                             adapter.notifyItemInserted(cards.indexOf(undoCard));
@@ -180,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
                                 for (int position : reverseSortedPositions) {
-                                    sendMessage(cards.get(position).message, cards.get(position).contactNum);
+                                    sendMessage(cards.get(position).message, cards.get(position).contactName);
                                 }
                             }
                         });
@@ -260,6 +263,21 @@ public class MainActivity extends AppCompatActivity {
         //</editor-fold>
     }
 
+    public String getPhoneNumber(String name, Context context) {
+        String ret = null;
+        String selection = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+" like'%" + name +"%'";
+        String[] projection = new String[] { ContactsContract.CommonDataKinds.Phone.NUMBER};
+        Cursor c = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                projection, selection, null, null);
+        if (c.moveToFirst()) {
+            ret = c.getString(0);
+        }
+        c.close();
+        if(ret==null)
+            ret = "Unsaved";
+        return ret;
+    }
+
     public void refreshEmptyRvMsg() {
         if(cards.size()==0)
             noCardsTv.setVisibility(View.VISIBLE);
@@ -335,6 +353,27 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.importCards:
+                Intent intent = new Intent(this, TextMessageImporterActivity.class);
+                startActivity(intent);
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 
     private void registerMessagingReceivers() {
         //---when the SMS has been sent---
@@ -364,15 +403,14 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(sendBroadcastReceiver, new IntentFilter(SENT));
     }
 
-    public void sendMessage(String msg, String contactNum) {
+    public void sendMessage(String msg, String contactName) {
         PendingIntent sentPI = PendingIntent.getBroadcast(this, 0,
                 new Intent(SENT), 0);
-        if(spamMap.get(contactNum) < 9) {
-            int i = contactNum.indexOf('[');
-            String contactNumC = contactNum.substring(0, i);
+        if(spamMap.get(contactName) < 9) {
+            String contactNumC = getPhoneNumber(contactName, this);
             SmsManager sms = SmsManager.getDefault();
             sms.sendTextMessage(contactNumC, null, msg, sentPI, null);
-            spamMap.put(contactNum, spamMap.get(contactNum) + 1);
+            spamMap.put(contactName, spamMap.get(contactName) + 1);
 
             adInterstitial = com.tappx.TAPPXAdInterstitial.Configure(this, TAPPX_KEY,
                     new AdListener() {

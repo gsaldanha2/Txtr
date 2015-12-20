@@ -1,5 +1,6 @@
 package txtr.apps.armorg.com.txtr;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -150,6 +151,8 @@ public class WelcomeScreenActivity extends AppCompatActivity {
 
     private void endTutorial() {
         SharedPrefsHandler.saveBoolean("firstTime", false, this);
+        Intent intent = new Intent(this, TextMessageImporterActivity.class);
+        startActivity(intent);
         finish();
         overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
     }

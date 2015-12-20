@@ -30,4 +30,6 @@
     <string name="swipeRemove">Balayer pour supprimer</string>
     <string name="undo">ANNULER</string>
     <string name="welcome">Bienvenue à Txtr</string>
+    <string name="recommendCards">Txtr recommande ces cartes pour vous</string>
+    <string name="cardImporter">Importer les fiches</string>
 </resources>

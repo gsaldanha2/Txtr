@@ -46,7 +46,7 @@ public class ContactsFragment extends Fragment {
         contactsRv.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                CardCreatorActivity.contactNum = contacts.get(position).contactNum + " [" + contacts.get(position).contactName + "]";
+                CardCreatorActivity.contactName = contacts.get(position).contactName;
                 CardCreatorActivity.submitContact();
             }
         }));
