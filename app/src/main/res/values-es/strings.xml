@@ -30,6 +30,6 @@
     <string name="plusIconCard">A continuación, haga clic en el icono más (+)\ny seleccione un contacto y frase</string>
     <string name="getStarted">Desliza el dedo para quitar\nPulse la flecha para continuar</string>
     <string name="spam">Protección contra spam - inténtelo más adelante</string>
-    <string name="recommendCards">Txtr recomienda estas tarjetas para usted</string>
+    <string name="recommendCards">Txtr recomienda estas tarjetas para usted\nDesliza el dedo para agregar</string>
     <string name="cardImporter">Tarjetas de importación</string>
 </resources>

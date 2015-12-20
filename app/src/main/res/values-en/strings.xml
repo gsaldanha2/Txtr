@@ -30,6 +30,6 @@
     <string name="plusIconCard">Then, click the plus icon\nand choose a contact and phrase</string>
     <string name="getStarted">Let\'s get started!\nPress the arrow to continue</string>
     <string name="spam">Spam Protection - Try later</string>
-    <string name="recommendCards">Txtr recommends these cards for you</string>
+    <string name="recommendCards">Txtr recommends these cards for you\nSwipe to add</string>
     <string name="cardImporter">Import Cards</string>
 </resources>

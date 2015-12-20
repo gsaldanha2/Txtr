@@ -294,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
         cards = new ArrayList<>();
         cardArray = SharedPrefsHandler.loadStringArray("card_msg_list", this);
         cardNumArray = SharedPrefsHandler.loadStringArray("card_num_list", this);
-        for(int i = 0; i < cardArray.size(); i ++) {
+        for(int i = 0; i < cardArray.size(); i++) {
             cards.add(new Card(cardArray.get(i), cardNumArray.get(i)));
         }
 

@@ -24,10 +24,12 @@ import android.widget.RelativeLayout;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class TextMessageImporterActivity extends AppCompatActivity {
 
@@ -46,25 +48,32 @@ public class TextMessageImporterActivity extends AppCompatActivity {
 
         layout = (RelativeLayout) findViewById(R.id.root);
 
-        LinkedHashMap<String, Integer> map = new CaseInsensitiveMap();
+        Map<String, Integer> map = new TreeMap<String, Integer>(String.CASE_INSENSITIVE_ORDER);
         List<Sms> sms = getAllSms();
         for (Sms msgs : sms) {
             String message = msgs.getMsg().replaceAll("[?!.]", "");
             if (message.equals("")) {
                 continue;
             }
-            String entry = msgs.getAddress() + "&" + message;
-            Log.e("txtr-app", "ENTRY : " + entry);
+            String num = msgs.getAddress();
+            if(num.equals("") || num.length() < 7)
+                continue;
+            if(num.length() > 10)
+                num = num.substring(num.length() - 10);
+            String entry = num + "&" + message;
             try {
-                map.put(entry, map.get(entry) + 1);
+                int duplicates = map.get(entry)+1;
+                map.put(entry, duplicates);
+//                Log.e("txtr-app", "\n\n duplicate: " + entry+"\n\n");
             } catch (Exception e) {
                 map.put(entry, 1);
+//                Log.e("txtr-app", "single msg :\t" + entry);
             }
         }
-        Log.e("txtr-app", "\n\n\n\n");
+//        Log.e("txtr-app", "\n\n\n\n");
 
-        map = new LinkedHashMap<>(sortByComparator(map, true));
-        Log.e("txtr-app", map.toString());
+        map = new LinkedHashMap<>(sortByComparator(map, false));
+//        Log.e("txtr-app", map.toString());
         ArrayList<String> topSms = new ArrayList(map.keySet());
 
         RecyclerView cardsRv = (RecyclerView) findViewById(R.id.cards_rv);
@@ -73,7 +82,13 @@ public class TextMessageImporterActivity extends AppCompatActivity {
         cardsRv.setLayoutManager(llm);
 
         cards = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        int extractingSMS;
+        if(map.size() < 10)
+            extractingSMS = map.size();
+        else
+            extractingSMS = 10;
+
+        for (int i = 0; i < extractingSMS; i++) {
             String entry = topSms.get(i);
             System.out.println(entry);
             String[] str = entry.split("&");
@@ -197,7 +212,9 @@ public class TextMessageImporterActivity extends AppCompatActivity {
 
         Cursor c = cr.query(message, null, null, null, null);
         startManagingCursor(c);
-        int totalSMS = c.getCount();
+        int totalSMS = 200;
+        if(c.getCount() < totalSMS)
+            totalSMS = c.getCount();
 
         if (c.moveToFirst()) {
             for (int i = 0; i < totalSMS; i++) {
@@ -225,23 +242,5 @@ public class TextMessageImporterActivity extends AppCompatActivity {
         c.close();
 
         return lstSms;
-    }
-
-    public class CaseInsensitiveMap extends LinkedHashMap<String, Integer> {
-
-        @Override
-        public Integer put(String key, Integer value) {
-            return super.put(key.toLowerCase(), value);
-        }
-
-        @Override
-        public boolean containsKey(Object key) {
-            return super.containsKey(key.toString().toLowerCase());
-        }
-
-        // not @Override because that would require the key parameter to be of type Object
-        public Integer get(String key) {
-            return super.get(key.toLowerCase());
-        }
     }
 }

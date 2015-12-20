@@ -30,6 +30,6 @@
     <string name="swipeRemove">Проведите пальцем для снятия</string>
     <string name="undo">Ослабьте затяжку</string>
     <string name="welcome">Добро пожаловать в Txtr</string>
-    <string name="recommendCards">Txtr рекомендует эти карты для вас</string>
+    <string name="recommendCards">Txtr рекомендует эти карты для вас\nПроведите пальцем для добавления</string>
     <string name="cardImporter">Импорт карт</string>
 </resources>
